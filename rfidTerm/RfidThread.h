@@ -13,6 +13,10 @@
 #include <QThread>
 #include <QString>
 
+QString printData(const LPSKYETEK_DATA data);
+QString tcharToQString(const TCHAR* str);
+unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void* user);
+
 class RfidThread
 	: public QThread
 {
@@ -20,8 +24,6 @@ class RfidThread
 public:
 	RfidThread(QObject* parent = nullptr);
 	~RfidThread();
-
-	
 
 protected:
 	void run();
@@ -35,8 +37,4 @@ private:
 	unsigned int mNumOfReaders;
 
 	bool getReaders();
-
-	unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void* user);
-	SKYETEK_STATUS ReadTagData(LPSKYETEK_READER lpReader, LPSKYETEK_TAG lpTag);
 };
-
