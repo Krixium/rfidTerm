@@ -1,0 +1,9 @@
+.vs
+Win32
+Debug
+Release
+x64
+rfidTerm/Debug
+rfidTerm/GeneratedFiles
+rfidTerm/x64
+
