@@ -33,7 +33,7 @@
 | ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 | POSSIBILITY OF SUCH DAMAGE.
 |--------------------------------------------------------------------------
-| To access Aardvark devices through the API:
+| To access Aardvark mDevices through the API:
 |
 | 1) Use the following shared object:
 |      aardvark.so      --  Linux shared object
@@ -173,7 +173,7 @@ typedef struct AardvarkVersion AardvarkVersion;
 #define AA_PORT_NOT_FREE 0x8000
 int aa_find_devices (
     int      nelem,
-    aa_u16 * devices
+    aa_u16 * mDevices
 );
 
 
@@ -189,7 +189,7 @@ int aa_find_devices (
  */
 int aa_find_devices_ext (
     int      nelem,
-    aa_u16 * devices,
+    aa_u16 * mDevices,
     aa_u32 * unique_ids
 );
 

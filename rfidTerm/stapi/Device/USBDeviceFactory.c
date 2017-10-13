@@ -175,7 +175,7 @@ USBDeviceFactory_DiscoverDevices(
 
 	for(bus = usb_busses; bus; bus = bus->next)
 	{
-		for(dev = bus->devices; dev; dev = dev->next)
+		for(dev = bus->mDevices; dev; dev = dev->next)
 		{
 			if((dev->descriptor.idVendor == VID) &&
 					(dev->descriptor.idProduct == PID))

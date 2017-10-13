@@ -373,7 +373,7 @@ USBDevice_Open(LPSKYETEK_DEVICE device)
 start:
 	for(bus = usb_busses; bus; bus = bus->next)
 	{
-		for(dev = bus->devices; dev; dev = dev->next)
+		for(dev = bus->mDevices; dev; dev = dev->next)
 		{
 			if(strcmp(device->address, dev->filename) == 0)
 			{

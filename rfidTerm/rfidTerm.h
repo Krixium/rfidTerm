@@ -1,11 +1,9 @@
 #pragma once
 
-#include <stdio.h>
-#include <stapi\SkyeTekAPI.h>
-#include <stapi\SkyeTekProtocol.h>
-
 #include <QtWidgets/QMainWindow>
 #include "ui_rfidTerm.h"
+
+#include "RfidThread.h"
 
 class rfidTerm : public QMainWindow
 {
@@ -16,5 +14,7 @@ public:
 
 private:
 	Ui::rfidTermClass ui;
+
+	RfidThread* mRfidThread;
 };
 

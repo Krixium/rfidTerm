@@ -3,7 +3,7 @@
  * (c) 2004 - 2006 SkyeTek, Inc. All Rights Reserved.
  *
  * Defines the Device object and the global functions
- * to get the list of available devices.
+ * to get the list of available mDevices.
  */
 #ifndef SKYETEK_DEVICE_H
 #define SKYETEK_DEVICE_H

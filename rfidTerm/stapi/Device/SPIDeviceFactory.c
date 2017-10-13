@@ -60,7 +60,7 @@ SPIDeviceFactory_DiscoverDevices(
   SKYETEK_STATUS status;
   int numDevices = 0;
   int numCreated = 0;
-  aa_u16 devices[10];
+  aa_u16 mDevices[10];
   TCHAR address[16];
   int i;
   Aardvark a = 0;
@@ -69,7 +69,7 @@ SPIDeviceFactory_DiscoverDevices(
 	if((lpDevices == NULL) || (*lpDevices != NULL))
 		return 0;
 
-  numDevices = aa_find_devices(10, devices);
+  numDevices = aa_find_devices(10, mDevices);
   if( numDevices <= 0 )
     return 0;
 
@@ -79,14 +79,14 @@ SPIDeviceFactory_DiscoverDevices(
 	{       
     // we create one for SPI and one for I2C here
     memset(address,0,16*sizeof(TCHAR));
-    _stprintf(address,_T("%s%d"),SKYETEK_I2C_DEVICE_TYPE, devices[i]);
+    _stprintf(address,_T("%s%d"),SKYETEK_I2C_DEVICE_TYPE, mDevices[i]);
 		status = SPIDeviceFactory_CreateDevice(address, &((*lpDevices)[numCreated]));
     if( status != SKYETEK_SUCCESS )
   		break;
     numCreated++;
 
     memset(address,0,16*sizeof(TCHAR));
-    _stprintf(address, _T("%s%d"),SKYETEK_SPI_DEVICE_TYPE, devices[i]);
+    _stprintf(address, _T("%s%d"),SKYETEK_SPI_DEVICE_TYPE, mDevices[i]);
 		status = SPIDeviceFactory_CreateDevice(address, &((*lpDevices)[numCreated]));
     if( status != SKYETEK_SUCCESS )
       break;

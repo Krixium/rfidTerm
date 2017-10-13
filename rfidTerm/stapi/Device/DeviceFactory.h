@@ -2,7 +2,7 @@
  * DeviceFactory.h
  * (c) 2004 - 2006 SkyeTek, Inc. All Rights Reserved.
  *
- * Discovers and creates devices.
+ * Discovers and creates mDevices.
  */
 #ifndef DEVICE_FACTORY_H
 #define DEVICE_FACTORY_H

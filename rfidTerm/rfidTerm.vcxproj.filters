@@ -45,6 +45,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_rfidTerm.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="RfidThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_RfidThread.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_RfidThread.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="rfidTerm.h">
@@ -55,6 +64,9 @@
     </CustomBuild>
     <CustomBuild Include="rfidTerm.qrc">
       <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RfidThread.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

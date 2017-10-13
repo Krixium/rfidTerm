@@ -57,9 +57,9 @@ CreateReaderImpl(
 
 unsigned int 
 DiscoverReadersImpl(
-  LPSKYETEK_DEVICE      *devices, 
+  LPSKYETEK_DEVICE      *mDevices, 
   unsigned int          deviceCount, 
-  LPSKYETEK_READER      **readers
+  LPSKYETEK_READER      **mReaders
   )
 {
   LPREADER_FACTORY pReaderFactory;
@@ -72,12 +72,12 @@ DiscoverReadersImpl(
   {
     pReaderFactory = ReaderFactory_GetFactory(ix);
     localReaders = NULL;
-    localCount = pReaderFactory->DiscoverReaders(devices, deviceCount, &localReaders);
+    localCount = pReaderFactory->DiscoverReaders(mDevices, deviceCount, &localReaders);
   
     if(localCount > 0) 
     {
-      *readers = (LPSKYETEK_READER*)realloc(*readers, (readerCount + localCount) * sizeof(LPSKYETEK_READER));
-      memcpy(((*readers) + readerCount), localReaders, localCount*sizeof(LPSKYETEK_READER));
+      *mReaders = (LPSKYETEK_READER*)realloc(*mReaders, (readerCount + localCount) * sizeof(LPSKYETEK_READER));
+      memcpy(((*mReaders) + readerCount), localReaders, localCount*sizeof(LPSKYETEK_READER));
       free(localReaders);
       readerCount += localCount;
     }
@@ -88,7 +88,7 @@ DiscoverReadersImpl(
 
 void 
 FreeReadersImpl(
-  LPSKYETEK_READER    *readers, 
+  LPSKYETEK_READER    *mReaders, 
   unsigned int        count
   )
 {
@@ -97,7 +97,7 @@ FreeReadersImpl(
   for(ix = 0; ix < ReaderFactory_GetCount(); ix++) 
   {
     pReaderFactory = ReaderFactory_GetFactory(ix);
-    pReaderFactory->FreeReaders(readers,count);
+    pReaderFactory->FreeReaders(mReaders,count);
   }
 }
 

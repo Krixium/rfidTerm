@@ -33,7 +33,7 @@
 | ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 | POSSIBILITY OF SUCH DAMAGE.
 |--------------------------------------------------------------------------
-| To access Aardvark devices through the API:
+| To access Aardvark mDevices through the API:
 |
 | 1) Use the following shared object:
 |      aardvark.so      --  Linux shared object
@@ -306,7 +306,7 @@ static void *_loadFunction (const char *name, int *result) {
 static int (*c_aa_find_devices) (int, aa_u16 *) = 0;
 int aa_find_devices (
     int      nelem,
-    aa_u16 * devices
+    aa_u16 * mDevices
 )
 {
     if (c_aa_find_devices == 0) {
@@ -314,14 +314,14 @@ int aa_find_devices (
         if (!(c_aa_find_devices = _loadFunction("c_aa_find_devices", &res)))
             return res;
     }
-    return c_aa_find_devices(nelem, devices);
+    return c_aa_find_devices(nelem, mDevices);
 }
 
 
 static int (*c_aa_find_devices_ext) (int, aa_u16 *, aa_u32 *) = 0;
 int aa_find_devices_ext (
     int      nelem,
-    aa_u16 * devices,
+    aa_u16 * mDevices,
     aa_u32 * unique_ids
 )
 {
@@ -330,7 +330,7 @@ int aa_find_devices_ext (
         if (!(c_aa_find_devices_ext = _loadFunction("c_aa_find_devices_ext", &res)))
             return res;
     }
-    return c_aa_find_devices_ext(nelem, devices, unique_ids);
+    return c_aa_find_devices_ext(nelem, mDevices, unique_ids);
 }
 
 

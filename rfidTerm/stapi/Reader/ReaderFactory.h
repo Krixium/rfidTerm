@@ -21,9 +21,9 @@ typedef struct READER_FACTORY {
    */
   unsigned int 
   (*DiscoverReaders)(
-    LPSKYETEK_DEVICE    *devices, 
+    LPSKYETEK_DEVICE    *mDevices, 
     unsigned int        deviceCount, 
-    LPSKYETEK_READER    **readers
+    LPSKYETEK_READER    **mReaders
     );
 
   /**
@@ -31,7 +31,7 @@ typedef struct READER_FACTORY {
    */
   void 
   (*FreeReaders)(
-    LPSKYETEK_READER *readers,
+    LPSKYETEK_READER *mReaders,
     unsigned int count
     );
 
@@ -83,9 +83,9 @@ ReaderFactory_GetFactory(
  */
 unsigned int 
 DiscoverReadersImpl(
-  LPSKYETEK_DEVICE    *devices, 
+  LPSKYETEK_DEVICE    *mDevices, 
   unsigned int        deviceCount, 
-  LPSKYETEK_READER    **readers
+  LPSKYETEK_READER    **mReaders
   );
 
 /**
@@ -93,7 +93,7 @@ DiscoverReadersImpl(
  * @param readers Readers to free
  */
 void FreeReadersImpl(
-  LPSKYETEK_READER    *readers,
+  LPSKYETEK_READER    *mReaders,
   unsigned int        count
   );
 

@@ -473,9 +473,9 @@ SkyetekReaderFactory_CreateReader(
 
 unsigned int 
 SkyetekReaderFactory_DiscoverReaders(
-  LPSKYETEK_DEVICE    *devices, 
+  LPSKYETEK_DEVICE    *mDevices, 
   unsigned int        deviceCount, 
-  LPSKYETEK_READER    **readers
+  LPSKYETEK_READER    **mReaders
   )
 {
   unsigned int readerCount, ix, iy;
@@ -483,7 +483,7 @@ SkyetekReaderFactory_DiscoverReaders(
   LPDEVICEIMPL lpDI;
   unsigned char found = 0;
   
-  if((readers == NULL) || (*readers != NULL))
+  if((mReaders == NULL) || (*mReaders != NULL))
     return 0;
   if( deviceCount < 1 ) 
     return 0;
@@ -493,22 +493,22 @@ SkyetekReaderFactory_DiscoverReaders(
   for(ix = 0; ix < deviceCount; ix++)
   {
     lpReader = NULL;
-    lpDI = (LPDEVICEIMPL)devices[ix]->internal;
+    lpDI = (LPDEVICEIMPL)mDevices[ix]->internal;
     if( lpDI == NULL )
       continue;
     found = 0;
-		if( lpDI->Open(devices[ix]) == SKYETEK_SUCCESS )
+		if( lpDI->Open(mDevices[ix]) == SKYETEK_SUCCESS )
 		{
-      if( _tcscmp(devices[ix]->type,SKYETEK_SERIAL_DEVICE_TYPE) == 0 )
+      if( _tcscmp(mDevices[ix]->type,SKYETEK_SERIAL_DEVICE_TYPE) == 0 )
       {
         for( iy = 0; iy < NUM_SERIAL_DISCOVERY_SETTINGS; iy++ )
         {
           SkyeTek_Debug(_T("Attempting at baud %d\n"), SerialDiscoverySettings[iy].baudRate);
-          SerialDevice_SetOptions(devices[ix],&SerialDiscoverySettings[iy]);
-			    if(SkyetekReaderFactory_CreateReader(devices[ix], &lpReader) == SKYETEK_SUCCESS)
+          SerialDevice_SetOptions(mDevices[ix],&SerialDiscoverySettings[iy]);
+			    if(SkyetekReaderFactory_CreateReader(mDevices[ix], &lpReader) == SKYETEK_SUCCESS)
 			    {
-					    *readers = (LPSKYETEK_READER*)realloc(*readers, (readerCount + 1)*sizeof(LPSKYETEK_READER));
-					    (*readers)[readerCount] = lpReader;
+					    *mReaders = (LPSKYETEK_READER*)realloc(*mReaders, (readerCount + 1)*sizeof(LPSKYETEK_READER));
+					    (*mReaders)[readerCount] = lpReader;
 					    readerCount++;
               found = 1;
               break;
@@ -517,17 +517,17 @@ SkyetekReaderFactory_DiscoverReaders(
       }
       else
       {
-			  if(SkyetekReaderFactory_CreateReader(devices[ix], &lpReader) == SKYETEK_SUCCESS)
+			  if(SkyetekReaderFactory_CreateReader(mDevices[ix], &lpReader) == SKYETEK_SUCCESS)
 			  {
-					  *readers = (LPSKYETEK_READER*)realloc(*readers, (readerCount + 1)*sizeof(LPSKYETEK_READER));
-					  (*readers)[readerCount] = lpReader;
+					  *mReaders = (LPSKYETEK_READER*)realloc(*mReaders, (readerCount + 1)*sizeof(LPSKYETEK_READER));
+					  (*mReaders)[readerCount] = lpReader;
 					  readerCount++;
             found = 1;
 			  }
       }
       if( !found )
       {
-        lpDI->Close(devices[ix]);
+        lpDI->Close(mDevices[ix]);
       }
 		}
   }
@@ -552,21 +552,21 @@ SkyetekReaderFactory_FreeReader(
 
 void 
 SkyetekReaderFactory_FreeReaders(
-    LPSKYETEK_READER *readers,
+    LPSKYETEK_READER *mReaders,
     unsigned int count
     )
 {
   unsigned int ix = 0;
-	if(readers == NULL)
+	if(mReaders == NULL)
 		return;
   for( ix = 0; ix < count; ix++ )
   {
-    if( readers[ix] != NULL )
+    if( mReaders[ix] != NULL )
     {
-      if( readers[ix]->internal == &SkyetekReaderImpl )
+      if( mReaders[ix]->internal == &SkyetekReaderImpl )
       {
-        SkyetekReaderFactory_FreeReader(readers[ix]);
-        readers[ix] = NULL;
+        SkyetekReaderFactory_FreeReader(mReaders[ix]);
+        mReaders[ix] = NULL;
       }
     }
   }
