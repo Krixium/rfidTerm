@@ -7,9 +7,6 @@
 #include <stapi\SkyeTekAPI.h>
 #include <stapi\SkyeTekProtocol.h>
 
-#include <stapi\SkyeTekAPI.h>
-#include <stapi\SkyeTekProtocol.h>
-
 #include <QThread>
 #include <QString>
 

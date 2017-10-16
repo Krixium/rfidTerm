@@ -4,6 +4,7 @@
 
 bool bStop = false;
 
+// Converts LPSKYETEK_DATA to QString
 QString printData(const LPSKYETEK_DATA data)
 {
 	QString temp = QString("");
@@ -16,6 +17,7 @@ QString printData(const LPSKYETEK_DATA data)
 	return temp;
 }
 
+// Converts tchar to QString
 QString tcharToQString(const TCHAR* str)
 {
 	QString temp = QString("");
@@ -28,73 +30,28 @@ QString tcharToQString(const TCHAR* str)
 	return temp;
 }
 
+// Callback that is feed to SkyeTek_SelectTags()
 unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void* user)
 {
-	LPSKYETEK_READER* reader = (LPSKYETEK_READER*)user;
-	SKYETEK_STATUS st;
-	LPSKYETEK_DATA lpData = SkyeTek_AllocateData(1);
-	SKYETEK_ADDRESS addr;
-	SKYETEK_MEMORY mem;
-	const int SIZE_OF_DATA = 2048;
-	unsigned char data[SIZE_OF_DATA];
-
-	/*
-	mem->startBlock = 0;
-	mem->maxBlock = 0;
-	mem->bytesPerBlock = 0;
-	mem->lpOtherInfo = SkyeTek_AllocateData(1);
-	*/
-
+	// While not being told to stop
 	if (!bStop)
 	{
+		// If the tag is not null
 		if (lpTag != NULL)
 		{
+			// Print tag information
 			qDebug() << "Tag:" << tcharToQString(lpTag->friendly);
 
-			//// Get memory info
-			//memset(&mem, 0, sizeof(SKYETEK_MEMORY));
-			//mem.lpOtherInfo = SkyeTek_AllocateData(SIZE_OF_DATA);
-			//st = SkyeTek_GetTagInfo(reader[0], lpTag, &mem);
-			//if (st != SKYETEK_SUCCESS)
-			//{
-			//	qDebug() << "Getting tag info failed";
-			//	qDebug() << tcharToQString(SkyeTek_GetStatusMessage(st));
-			//	return bStop;
-			//}
-
-			//// Allocate memory
-			//memset(data, 0, SIZE_OF_DATA);
-			//unsigned long length = (mem.maxBlock - mem.startBlock + 1) * mem.bytesPerBlock;
-			//if (length > SIZE_OF_DATA)
-			//{
-			//	qDebug() << "Data was larger than buffer";
-			//	return bStop;
-			//}
-
-			//// Read memory
-			//memset(&addr, 0, sizeof(SKYETEK_ADDRESS));
-			//addr.start = mem.startBlock;
-			//addr.blocks = (mem.maxBlock - mem.startBlock + 1);
-
-			//addr.start = 10;
-			//addr.blocks = 1;
-
-			//st = SkyeTek_ReadTagData(reader[0], lpTag, &addr, 0, 0, &lpData);
-			//if (st != SKYETEK_SUCCESS)
-			//{
-			//	qDebug() << "Error Reading memory";
-			//	return bStop;
-			//}
-
-			//qDebug() << printData(lpData);
-
-			//SkyeTek_FreeData(lpData);
+			// Free the memory
 			SkyeTek_FreeTag(lpTag);
 		}
 	}
+
+	// Tell SkyeTek_SelectTags to stop reading this specific tag
 	return !bStop;
 }
 
+// Constructor
 RfidThread::RfidThread(QObject* parent)
 	: QThread(parent)
 	, mbStop(false)
@@ -105,43 +62,56 @@ RfidThread::RfidThread(QObject* parent)
 {
 }
 
+// Destructor
 RfidThread::~RfidThread()
 {
+	// QThread stuff
 	mbStop = true;
 	wait();
 
+	// SkyeTek memory management
 	qDebug() << "Freeing Devices";
 	SkyeTek_FreeDevices(mDevices, mNumOfDevices);
 	SkyeTek_FreeReaders(mReaders, mNumOfReaders);
 
+	// C++ memory management
 	delete mDevices;
 	delete mReaders;
 }
 
+// Finds readers that are connected to computer
 bool RfidThread::getReaders()
 {
+	// Save number of usb devices found
 	mNumOfDevices = SkyeTek_DiscoverDevices(&mDevices);
 
+	// If no devices are found
 	if (mNumOfDevices == 0)
 	{
+		// Manage memory
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
 		delete mDevices;
 		qDebug() << "No Devices";
 		return false;
 	}
+	// If devices are found
 	else
 	{
+		// Display information
 		qDebug() << "Num of Devices: " << mNumOfDevices;
 		for (int i = 0; i < mNumOfDevices; i++)
 		{
-			qDebug() << "Device " << i << ": " << mDevices[0]->friendly;
+			qDebug() << "Device " << i << ": " << tcharToQString(mDevices[0]->friendly);
 		}
 	}
 
+	// Save the number of readers found
 	mNumOfReaders = SkyeTek_DiscoverReaders(mDevices, mNumOfDevices, &mReaders);
 
+	// If no readers are found
 	if (mNumOfReaders == 0)
 	{
+		// Manage memeory
 		qDebug() << "Could not find readers";
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
 		SkyeTek_FreeReaders(mReaders, mNumOfReaders);
@@ -149,23 +119,28 @@ bool RfidThread::getReaders()
 		delete mReaders;
 		return false;
 	}
+	// If readers are found
 	else
 	{
+		// Display information
 		qDebug() << "Number of Readers: " << mNumOfReaders;
 	}
 
 	return (mNumOfReaders > 0);
 }
 
+// QThread main entry point when started
 void RfidThread::run()
 {
 	bool foundReader = false;
 
+	// loop until a reader is found
 	while (!foundReader)
 	{
 		foundReader = getReaders();
 	}
 
+	// Selects all tags within range of the reader and passes the tag to the callback
 	st = SkyeTek_SelectTags(mReaders[0], AUTO_DETECT, SelectLoopCallback, 0, 1, mReaders);
 
 	if (st != SKYETEK_SUCCESS)
@@ -175,7 +150,3 @@ void RfidThread::run()
 
 	qDebug() << "Reading finished";
 }
-
-
-
-
