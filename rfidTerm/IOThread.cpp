@@ -218,7 +218,7 @@ bool IOThread::findReaders()
 ----------------------------------------------------------------------------------------------------------------------*/
 QString IOThread::tcharToQString(const TCHAR* str) const
 {
-	QString tmp = QString("Tag Found");
+	QString tmp = QString("Tag Found: ");
 	for (int i = 0; str[i] != '\0'; i++)
 	{
 		tmp.append((LPSTR)(str + i));
