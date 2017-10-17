@@ -4,13 +4,14 @@
 
 rfidTerm::rfidTerm(QWidget *parent)
 	: QMainWindow(parent)
-	, mThread(new IOThread(this))
+	, mReader(new RfidReader(this))
+	, mThread(new IOThread(this, mReader))
 {
 	ui.setupUi(this);
 
-	connect(mThread, &IOThread::TagReadSignal, this, &rfidTerm::receiveData);
-	connect(mThread, &IOThread::IOMessageSignal, this, &rfidTerm::receiveMessage);
-	connect(mThread, &IOThread::IOErrorSignal, this, &rfidTerm::receiveError);
+	connect(mReader, &RfidReader::TagReadSignal, this, &rfidTerm::receiveData);
+	connect(mReader, &RfidReader::IOMessageSignal, this, &rfidTerm::receiveMessage);
+	connect(mReader, &RfidReader::IOErrorSignal, this, &rfidTerm::receiveError);
 
 	mThread->start();
 }

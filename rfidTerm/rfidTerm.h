@@ -4,6 +4,7 @@
 #include "ui_rfidTerm.h"
 
 #include "IOThread.h"
+#include "RfidReader.h"
 
 class rfidTerm : public QMainWindow
 {
@@ -16,6 +17,7 @@ private:
 	Ui::rfidTermClass ui;
 
 	IOThread* mThread;
+	RfidReader* mReader;
 
 private slots:
 	void receiveData(QString data);
