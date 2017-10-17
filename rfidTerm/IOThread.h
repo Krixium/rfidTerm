@@ -21,13 +21,13 @@ private:
 	bool findReaders();
 
 public:
-	IOThread(QObject *parent);
+	IOThread(QObject* parent);
 	~IOThread();
 
-	void sendTagReadSignal(const LPSKYETEK_TAG lpTag);
-	void sendIOMessageSignal(const QString status);
-	void sendIOErrorSignal(const SKYETEK_STATUS error);
-	void sendIOErrorSignal(const QString error);
+	void SendTagReadSignal(const LPSKYETEK_TAG lpTag);
+	void SendIOMessageSignal(const QString status);
+	void SendIOErrorSignal(const QString error);
+	void SendIOErrorSignal(const SKYETEK_STATUS error);
 
 protected:
 	void run();
