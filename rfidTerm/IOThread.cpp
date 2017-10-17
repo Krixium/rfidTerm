@@ -123,13 +123,13 @@ IOThread::~IOThread()
 void IOThread::run()
 {
 	SKYETEK_STATUS st;
+	while (mNumOfReaders == 0 && mbRun)
+	{
+		findReaders();
+	}
+
 	while (mbRun)
 	{
-		while (mNumOfReaders == 0)
-		{
-			findReaders();
-		}
-
 		st = SkyeTek_SelectTags(mReaders[0], AUTO_DETECT, ReadTagCallback, 0, 1, this);
 		if (st != SKYETEK_SUCCESS)
 		{
@@ -210,7 +210,7 @@ bool IOThread::findReaders()
 ----------------------------------------------------------------------------------------------------------------------*/
 QString IOThread::tcharToQString(const TCHAR* str) const
 {
-	QString tmp = QString("");
+	QString tmp = QString("Tag Found");
 	for (int i = 0; str[i] != '\0'; i++)
 	{
 		tmp.append((LPSTR)(str + i));
