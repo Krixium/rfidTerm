@@ -3,8 +3,6 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_rfidTerm.h"
 
-#include "RfidThread.h"
-
 class rfidTerm : public QMainWindow
 {
 	Q_OBJECT
@@ -14,7 +12,5 @@ public:
 
 private:
 	Ui::rfidTermClass ui;
-
-	RfidThread* mRfidThread;
 };
 
