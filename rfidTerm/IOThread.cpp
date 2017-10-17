@@ -260,11 +260,11 @@ void IOThread::SendTagReadSignal(const LPSKYETEK_TAG lpTag)
 -- RETURNS:			void.
 --
 -- NOTES:
--- Prepends "Message: " to the function parameter message and emits the new QString in an IOMEssageSignal().
+-- Prepends "IO Message: " to the function parameter message and emits the new QString in an IOMEssageSignal().
 ----------------------------------------------------------------------------------------------------------------------*/
 void IOThread::SendIOMessageSignal(const QString message)
 {
-	emit IOMessageSignal(QString("Message: %1").arg(message));
+	emit IOMessageSignal(QString("IO Message: %1").arg(message));
 }
 
 /*--------------------------------------------------------------------------------------------------------------------
@@ -284,11 +284,11 @@ void IOThread::SendIOMessageSignal(const QString message)
 -- RETURNS:			void.
 --
 -- NOTES:
--- Prepends "Error: " to the function parameter error and emits the new QString in an IOErrorSignal().
+-- Prepends "IO Error: " to the function parameter error and emits the new QString in an IOErrorSignal().
 ----------------------------------------------------------------------------------------------------------------------*/
 void IOThread::SendIOErrorSignal(const QString error)
 {
-	emit IOErrorSignal(QString("Error: %1").arg(error));
+	emit IOErrorSignal(QString("IO Error: %1").arg(error));
 }
 
 /*--------------------------------------------------------------------------------------------------------------------
@@ -309,13 +309,13 @@ void IOThread::SendIOErrorSignal(const QString error)
 --
 -- NOTES:
 -- Retrives the status message that corrisponds to to the function parameter status, converts it to a QString, prepends
--- "Error: ", and emits the new QString in an IOErrorSignal(). 
+-- "IO Error: ", and emits the new QString in an IOErrorSignal(). 
 ----------------------------------------------------------------------------------------------------------------------*/
 void IOThread::SendIOErrorSignal(const SKYETEK_STATUS status)
 {
 	TCHAR* tcharStatusMessage = SkyeTek_GetStatusMessage(status);
 	QString statusMessage = tcharToQString(tcharStatusMessage);
-	emit IOErrorSignal(QString("Error: %1").arg(statusMessage));
+	emit IOErrorSignal(QString("IO Error: %1").arg(statusMessage));
 }
 
 // TODO: FIGURE OUT WHAT TO DO WITH THIS
