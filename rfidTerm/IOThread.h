@@ -24,10 +24,10 @@ public:
 	IOThread(QObject* parent);
 	~IOThread();
 
-	void SendTagReadSignal(const LPSKYETEK_TAG lpTag);
-	void SendIOMessageSignal(const QString status);
-	void SendIOErrorSignal(const QString error);
-	void SendIOErrorSignal(const SKYETEK_STATUS error);
+	void sendTagReadSignal(const LPSKYETEK_TAG lpTag);
+	void sendIOMessageSignal(const QString status);
+	void sendIOErrorSignal(const QString error);
+	void sendIOErrorSignal(const SKYETEK_STATUS error);
 
 protected:
 	void run();
@@ -37,5 +37,3 @@ signals:
 	void IOMessageSignal(QString message);
 	void IOErrorSignal(QString error);
 };
-
-unsigned char ReadTagCallback(LPSKYETEK_TAG lpTag, void* user);

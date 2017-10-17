@@ -123,17 +123,30 @@ IOThread::~IOThread()
 void IOThread::run()
 {
 	SKYETEK_STATUS st;
-	while (mNumOfReaders == 0 && mbRun)
-	{
-		findReaders();
-	}
+	LPSKYETEK_TAG* lpTags;
+	unsigned short tagCount;
 
 	while (mbRun)
 	{
-		st = SkyeTek_SelectTags(mReaders[0], AUTO_DETECT, ReadTagCallback, 0, 1, this);
-		if (st != SKYETEK_SUCCESS)
+		if (mNumOfReaders == 0)
 		{
-			SendIOErrorSignal(st);
+			findReaders();
+		}
+		else
+		{
+			st = SkyeTek_GetTags(mReaders[0], AUTO_DETECT, &lpTags, &tagCount);
+			if (st != SKYETEK_SUCCESS)
+			{
+				sendIOErrorSignal(st);
+			}
+			else
+			{
+				for (unsigned short i = 0; i < tagCount; i++)
+				{
+					sendTagReadSignal(*(lpTags + i));
+					SkyeTek_FreeTag(*(lpTags + i));
+				}
+			}
 		}
 	}
 }
@@ -167,7 +180,7 @@ bool IOThread::findReaders()
 	mNumOfDevices = SkyeTek_DiscoverDevices(&mDevices);
 	if (mNumOfDevices == 0)
 	{
-		SendIOErrorSignal("No Devices Were Found");
+		sendIOErrorSignal("No Devices Were Found");
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
 		delete mDevices;
 		return false;
@@ -176,7 +189,7 @@ bool IOThread::findReaders()
 	mNumOfReaders = SkyeTek_DiscoverReaders(mDevices, mNumOfDevices, &mReaders);
 	if (mNumOfReaders == 0)
 	{
-		SendIOErrorSignal("No Readers Were Found");
+		sendIOErrorSignal("No Readers Were Found");
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
 		SkyeTek_FreeReaders(mReaders, mNumOfReaders);
 		delete mDevices;
@@ -184,7 +197,7 @@ bool IOThread::findReaders()
 		return false;
 	}
 	
-	SendIOMessageSignal(QString("Devices found %1, Readers found %2").arg(mNumOfDevices).arg(mNumOfReaders));
+	sendIOMessageSignal(QString("Devices found %1, Readers found %2").arg(mNumOfDevices).arg(mNumOfReaders));
 	return true;
 }
 
@@ -238,7 +251,7 @@ QString IOThread::tcharToQString(const TCHAR* str) const
 -- Takes the tag that was passed in, converts the friendly variable from a null terminated TCHAR array to a QString
 -- and emits the QString in a TAGReadSignal().
 ----------------------------------------------------------------------------------------------------------------------*/
-void IOThread::SendTagReadSignal(const LPSKYETEK_TAG lpTag)
+void IOThread::sendTagReadSignal(const LPSKYETEK_TAG lpTag)
 {
 	emit TagReadSignal(tcharToQString(lpTag->friendly));
 }
@@ -262,7 +275,7 @@ void IOThread::SendTagReadSignal(const LPSKYETEK_TAG lpTag)
 -- NOTES:
 -- Prepends "IO Message: " to the function parameter message and emits the new QString in an IOMEssageSignal().
 ----------------------------------------------------------------------------------------------------------------------*/
-void IOThread::SendIOMessageSignal(const QString message)
+void IOThread::sendIOMessageSignal(const QString message)
 {
 	emit IOMessageSignal(QString("IO Message: %1").arg(message));
 }
@@ -286,7 +299,7 @@ void IOThread::SendIOMessageSignal(const QString message)
 -- NOTES:
 -- Prepends "IO Error: " to the function parameter error and emits the new QString in an IOErrorSignal().
 ----------------------------------------------------------------------------------------------------------------------*/
-void IOThread::SendIOErrorSignal(const QString error)
+void IOThread::sendIOErrorSignal(const QString error)
 {
 	emit IOErrorSignal(QString("IO Error: %1").arg(error));
 }
@@ -311,49 +324,9 @@ void IOThread::SendIOErrorSignal(const QString error)
 -- Retrives the status message that corrisponds to to the function parameter status, converts it to a QString, prepends
 -- "IO Error: ", and emits the new QString in an IOErrorSignal(). 
 ----------------------------------------------------------------------------------------------------------------------*/
-void IOThread::SendIOErrorSignal(const SKYETEK_STATUS status)
+void IOThread::sendIOErrorSignal(const SKYETEK_STATUS status)
 {
 	TCHAR* tcharStatusMessage = SkyeTek_GetStatusMessage(status);
 	QString statusMessage = tcharToQString(tcharStatusMessage);
 	emit IOErrorSignal(QString("IO Error: %1").arg(statusMessage));
-}
-
-// TODO: FIGURE OUT WHAT TO DO WITH THIS
-bool bStop = false;
-
-/*--------------------------------------------------------------------------------------------------------------------
--- FUNCTION:		ReadTagCallback
---
--- DATE:			October 16, 2017
---
--- REVISIONS:		N/A
---
--- DESIGNER:		Benny Wang
---
--- PROGRAMMER:		Benny Wang
---
--- INTERFACE:		unsigned char ReadTagCallback(LPSKYETEK_TAG lpTag, void* user)
---						LPSKYETEK_TAG lpTag: A pointer to a tag that was read by the reader.
---						void* user: A pointer to another variables that might be needed in the callback but can
---						be null.
---
--- RETURNS:			A unsigned character to determine if the function completes or not, 1 to continue, 0 to stop.
---
--- NOTES:
--- Used by SkyeTekSelectTags() in loop mode. The function will pass every tag in range into this callback function
--- alone with the user specified void* user. In this implementation, as long as bStop is false and a tag has been
--- passed in, emit a SendTagReadSignal with the IOThread that was passed in as user.
-----------------------------------------------------------------------------------------------------------------------*/
-unsigned char ReadTagCallback(LPSKYETEK_TAG lpTag, void* user)
-{
-	if (!bStop)
-	{
-		if (lpTag != NULL)
-		{
-			((IOThread*)user)->SendTagReadSignal(lpTag);
-			SkyeTek_FreeTag(lpTag);
-		}
-	}
-
-	return !bStop;
 }
