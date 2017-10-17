@@ -348,7 +348,7 @@ unsigned char ReadTagCallback(LPSKYETEK_TAG lpTag, void* user)
 {
 	if (!bStop)
 	{
-		if (!lpTag != NULL)
+		if (lpTag != NULL)
 		{
 			((IOThread*)user)->SendTagReadSignal(lpTag);
 			SkyeTek_FreeTag(lpTag);
