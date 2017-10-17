@@ -9,7 +9,7 @@ class IOThread : public QThread
 	Q_OBJECT
 
 private:
-	bool mbRun;
+	bool mbRunning;
 
 	int mNumOfDevices;
 	int mNumOfReaders;
@@ -36,4 +36,8 @@ signals:
 	void TagReadSignal(QString data);
 	void IOMessageSignal(QString message);
 	void IOErrorSignal(QString error);
+
+public slots:
+	void StartReadingSlot();
+	void StopReadingSlot();
 };

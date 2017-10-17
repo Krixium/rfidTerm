@@ -23,7 +23,8 @@
 --					void IOErrorSignal(QString error) 
 --
 -- QT Slots:
---					void StopRunningSlot(bool isRunning)
+--					void StartReadingSlot()
+--					void StopReadingSlot()
 --
 -- DATE:			October 16, 2017 
 --
@@ -62,7 +63,7 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 IOThread::IOThread(QObject* parent)
 	: QThread(parent)
-	, mbRun(true)
+	, mbRunning(true)
 	, mNumOfDevices(0)
 	, mNumOfReaders(0)
 	, mDevices(NULL)
@@ -90,14 +91,11 @@ IOThread::IOThread(QObject* parent)
 ----------------------------------------------------------------------------------------------------------------------*/
 IOThread::~IOThread()
 {
-	mbRun = false;
+	mbRunning = false;
 	wait();
 
 	SkyeTek_FreeReaders(mReaders, mNumOfReaders);
 	SkyeTek_FreeDevices(mDevices, mNumOfDevices);
-
-	delete mDevices;
-	delete mReaders;
 }
 
 
@@ -126,7 +124,7 @@ void IOThread::run()
 	LPSKYETEK_TAG* lpTags;
 	unsigned short tagCount;
 
-	while (mbRun)
+	while (mbRunning)
 	{
 		if (mNumOfReaders == 0)
 		{
@@ -182,7 +180,6 @@ bool IOThread::findReaders()
 	{
 		sendIOErrorSignal("No Devices Were Found");
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
-		delete mDevices;
 		return false;
 	}
 
@@ -192,8 +189,6 @@ bool IOThread::findReaders()
 		sendIOErrorSignal("No Readers Were Found");
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
 		SkyeTek_FreeReaders(mReaders, mNumOfReaders);
-		delete mDevices;
-		delete mReaders;
 		return false;
 	}
 	
@@ -329,4 +324,59 @@ void IOThread::sendIOErrorSignal(const SKYETEK_STATUS status)
 	TCHAR* tcharStatusMessage = SkyeTek_GetStatusMessage(status);
 	QString statusMessage = tcharToQString(tcharStatusMessage);
 	emit IOErrorSignal(QString("IO Error: %1").arg(statusMessage));
+}
+
+/*--------------------------------------------------------------------------------------------------------------------
+-- FUNCTION:		IOThread::StartReadingSlot()
+--
+-- DATE:			October 16, 2017
+--
+-- REVISIONS:		N/A
+--
+-- DESIGNER:		Benny Wang
+--
+-- PROGRAMMER:		Benny Wang
+--
+-- INTERFACE:		void IOThread::StartReadingSlot()	
+--
+-- RETURNS:			void.
+--
+-- NOTES:
+-- A Qt Slot that starts the thread when it receives a signal.
+----------------------------------------------------------------------------------------------------------------------*/
+void IOThread::StartReadingSlot()
+{
+	if (findReaders())
+	{
+		mbRunning = true;
+		start();
+	}
+	else
+	{
+		mbRunning = false;
+	}
+}
+
+/*--------------------------------------------------------------------------------------------------------------------
+-- FUNCTION:		IOThread::StopReadingSlot()
+--
+-- DATE:			October 16, 2017
+--
+-- REVISIONS:		N/A
+--
+-- DESIGNER:		Benny Wang
+--
+-- PROGRAMMER:		Benny Wang
+--
+-- INTERFACE:		void IOThread::StopReadingSlot()	
+--
+-- RETURNS:			void.
+--
+-- NOTES:
+-- A Qt Slot that stops the thread when it receives a signal.
+----------------------------------------------------------------------------------------------------------------------*/
+void IOThread::StopReadingSlot()
+{
+	mbRunning = false;
+	wait();
 }
