@@ -98,7 +98,6 @@ IOThread::~IOThread()
 	SkyeTek_FreeDevices(mDevices, mNumOfDevices);
 }
 
-
 /*--------------------------------------------------------------------------------------------------------------------
 -- FUNCTION:		IOThread::run
 --
@@ -110,13 +109,16 @@ IOThread::~IOThread()
 --
 -- PROGRAMMER:		Benny Wang	
 --
--- INTERFACE:		void IOThread::run()
+-- INTERFACE:		void IOThread::run()	
 --
 -- RETURNS:			void.	
 --
 -- NOTES:
---
--- TODO: WE PROBABLY HAVE TO REDESIGN THIS FUNCTION, OUTER LOOP DOESNT REALLY HELP
+-- The entry point for this thread. While the thread is running this thread will reapeat these actions:
+--	1) Check if any readers are connected, if no readers are connected it will attempt to find readers.
+--	2) Loop through all the readers and emit a TagReadSignal for each tag once.
+--  3) Deallocate any memory used by the tag.
+--  4) Sleeps for 1 second
 ----------------------------------------------------------------------------------------------------------------------*/
 void IOThread::run()
 {
@@ -132,19 +134,23 @@ void IOThread::run()
 		}
 		else
 		{
-			st = SkyeTek_GetTags(mReaders[0], AUTO_DETECT, &lpTags, &tagCount);
-			if (st != SKYETEK_SUCCESS)
+			for (int i = 0; i < mNumOfReaders; i++)
 			{
-				sendIOErrorSignal(st);
-			}
-			else
-			{
-				for (unsigned short i = 0; i < tagCount; i++)
+				st = SkyeTek_GetTags(mReaders[i], AUTO_DETECT, &lpTags, &tagCount);
+				if (st != SKYETEK_SUCCESS)
 				{
-					sendTagReadSignal(*(lpTags + i));
-					SkyeTek_FreeTag(*(lpTags + i));
+					sendIOErrorSignal(st);
+				}
+				else
+				{
+					for (unsigned short j = 0; j < tagCount; j++)
+					{
+						sendTagReadSignal(*(lpTags + j));
+						SkyeTek_FreeTag(*(lpTags + j));
+					}
 				}
 			}
+
 		}
 		sleep(1);
 	}

@@ -13,6 +13,7 @@ rfidTerm::rfidTerm(QWidget *parent)
 
 	connect(ui.actionConnect, &QAction::triggered, this, &rfidTerm::StartReading);
 	connect(ui.actionDisconnect, &QAction::triggered, this, &rfidTerm::StopReading);
+	connect(mConsole, &Console::StopReadingSignal, this, &rfidTerm::StopReading);
 
 	mConsole->setEnabled(false);
 	ui.actionConnect->setEnabled(true);

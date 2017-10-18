@@ -1,6 +1,6 @@
 #include "console.h"
 
-Console::Console(QWidget *parent)
+Console::Console(QWidget* parent)
 	: QPlainTextEdit(parent)
 {
 	isReadOnly();
@@ -24,10 +24,10 @@ void Console::printError(const QString data)
 void Console::keyPressEvent(QKeyEvent *e)
 {
 	switch (e->key()) {
-	case Qt::Key_Escape:
-		emit StopReadingSignal();
-		break;
-	default:
-		break;
+		case Qt::Key_Escape:
+			emit StopReadingSignal();
+			break;
+		default:
+			break;
 	}
 }
