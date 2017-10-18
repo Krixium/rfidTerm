@@ -18,13 +18,10 @@
 --					unsigned char ReadTagCallback(LPSKYETEK_TAG lpTag, void* user)
 -- 
 -- QT Signals:		
+--					void NoReaderFoundSignal()
 --					void TagReadSignal(QString data)
 --					void IOMessageSignal(QString message)
 --					void IOErrorSignal(QString error) 
---
--- QT Slots:
---					void StartReadingSlot()
---					void StopReadingSlot()
 --
 -- DATE:			October 16, 2017 
 --
@@ -126,31 +123,25 @@ void IOThread::run()
 	LPSKYETEK_TAG* lpTags;
 	unsigned short tagCount;
 
+	mbRunning = findReaders();
+
 	while (mbRunning)
 	{
-		if (mNumOfReaders == 0)
+		for (int i = 0; i < mNumOfReaders; i++)
 		{
-			findReaders();
-		}
-		else
-		{
-			for (int i = 0; i < mNumOfReaders; i++)
+			st = SkyeTek_GetTags(mReaders[i], AUTO_DETECT, &lpTags, &tagCount);
+			if (st != SKYETEK_SUCCESS)
 			{
-				st = SkyeTek_GetTags(mReaders[i], AUTO_DETECT, &lpTags, &tagCount);
-				if (st != SKYETEK_SUCCESS)
+				sendIOErrorSignal(st);
+			}
+			else
+			{
+				for (unsigned short j = 0; j < tagCount; j++)
 				{
-					sendIOErrorSignal(st);
-				}
-				else
-				{
-					for (unsigned short j = 0; j < tagCount; j++)
-					{
-						sendTagReadSignal(*(lpTags + j));
-						SkyeTek_FreeTag(*(lpTags + j));
-					}
+					sendTagReadSignal(*(lpTags + j));
+					SkyeTek_FreeTag(*(lpTags + j));
 				}
 			}
-
 		}
 		sleep(1);
 	}
@@ -187,6 +178,7 @@ bool IOThread::findReaders()
 	{
 		sendIOErrorSignal("No Devices Were Found");
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
+		emit NoReaderFoundSignal();
 		return false;
 	}
 
@@ -196,6 +188,7 @@ bool IOThread::findReaders()
 		sendIOErrorSignal("No Readers Were Found");
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
 		SkyeTek_FreeReaders(mReaders, mNumOfReaders);
+		emit NoReaderFoundSignal();
 		return false;
 	}
 	

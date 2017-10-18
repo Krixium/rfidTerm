@@ -17,7 +17,7 @@ signals:
 	void StopReadingSignal();
 
 public slots:
-	void printTag(const QString data);
-	void printMessage(const QString data);
-	void printError(const QString data);
+	void PrintTag(const QString data);
+	void PrintMessage(const QString data);
+	void PrintError(const QString data);
 };

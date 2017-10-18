@@ -6,17 +6,17 @@ Console::Console(QWidget* parent)
 	isReadOnly();
 }
 
-void Console::printTag(const QString data)
+void Console::PrintTag(const QString data)
 {
 	appendPlainText(data);
 }
 
-void Console::printMessage(const QString data)
+void Console::PrintMessage(const QString data)
 {
 	appendPlainText(data);
 }
 
-void Console::printError(const QString data)
+void Console::PrintError(const QString data)
 {
 	QMessageBox::information(this, tr("Error"), data);
 }

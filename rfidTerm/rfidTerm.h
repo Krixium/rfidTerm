@@ -13,10 +13,13 @@ class rfidTerm : public QMainWindow
 public:
 	rfidTerm(QWidget *parent = Q_NULLPTR);
 
+
 private:
 	Ui::rfidTermClass ui;
 	Console* mConsole;
 	IOThread* mThread;
+
+	inline void setConsoleEnabled(const bool isEnabled = false);
 
 public slots:
 	void StartReading();

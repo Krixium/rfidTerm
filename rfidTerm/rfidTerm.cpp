@@ -4,7 +4,7 @@
 
 rfidTerm::rfidTerm(QWidget *parent)
 	: QMainWindow(parent)
-	, mThread(NULL)
+	, mThread(new IOThread(this))
 	, mConsole(new Console(this))
 {
 	ui.setupUi(this);
@@ -13,31 +13,33 @@ rfidTerm::rfidTerm(QWidget *parent)
 
 	connect(ui.actionConnect, &QAction::triggered, this, &rfidTerm::StartReading);
 	connect(ui.actionDisconnect, &QAction::triggered, this, &rfidTerm::StopReading);
-	connect(mConsole, &Console::StopReadingSignal, this, &rfidTerm::StopReading);
+
+	connect(mThread, &IOThread::TagReadSignal, mConsole, &Console::PrintTag);
+	connect(mThread, &IOThread::IOMessageSignal, mConsole, &Console::PrintMessage);
+	connect(mThread, &IOThread::IOErrorSignal, mConsole, &Console::PrintError);
+
+	connect(mThread, &IOThread::NoReaderFoundSignal, this, &rfidTerm::StopReading);
 
 	mConsole->setEnabled(false);
 	ui.actionConnect->setEnabled(true);
 	ui.actionDisconnect->setEnabled(false);
+}
+
+void rfidTerm::setConsoleEnabled(const bool isEnabled)
+{
+	mConsole->setEnabled(isEnabled);
+	ui.actionConnect->setEnabled(!isEnabled);
+	ui.actionDisconnect->setEnabled(isEnabled);
 }
 
 void rfidTerm::StartReading()
 {
-	mThread = new IOThread(this);
 	mThread->start();
-
-	connect(mThread, &IOThread::TagReadSignal, mConsole, &Console::printTag);
-	connect(mThread, &IOThread::IOMessageSignal, mConsole, &Console::printMessage);
-	connect(mThread, &IOThread::IOErrorSignal, mConsole, &Console::printError);
-
-	mConsole->setEnabled(true);
-	ui.actionConnect->setEnabled(false);
-	ui.actionDisconnect->setEnabled(true);
+	setConsoleEnabled(true);
 }
 
 void rfidTerm::StopReading()
 {
-	delete mThread;
-	mConsole->setEnabled(false);
-	ui.actionConnect->setEnabled(true);
-	ui.actionDisconnect->setEnabled(false);
+	mThread->terminate();
+	setConsoleEnabled(false);
 }

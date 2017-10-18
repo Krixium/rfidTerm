@@ -10,7 +10,6 @@ class IOThread : public QThread
 
 private:
 	bool mbRunning;
-
 	int mNumOfDevices;
 	int mNumOfReaders;
 	LPSKYETEK_DEVICE* mDevices;
@@ -33,6 +32,7 @@ protected:
 	void run();
 
 signals:
+	void NoReaderFoundSignal();
 	void TagReadSignal(QString data);
 	void IOMessageSignal(QString message);
 	void IOErrorSignal(QString error);
