@@ -7,17 +7,15 @@
 #include "console.h"
 #include "IOThread.h"
 
-class Console;
 class rfidTerm : public QMainWindow
 {
 	Q_OBJECT
-
 public:
 	rfidTerm(QWidget *parent = Q_NULLPTR);
 
 private:
 	Ui::rfidTermClass ui;
-	Console *console;
+	Console* mConsole;
 	IOThread* mThread;
 
 public slots:

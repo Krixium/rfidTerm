@@ -1,10 +1,9 @@
 #include "console.h"
-#include <qmessagebox.h>
-#include <QtCore/QDebug>
 
 Console::Console(QWidget *parent)
 	: QPlainTextEdit(parent)
 {
+	isReadOnly();
 }
 
 void Console::printTag(const QString data)
