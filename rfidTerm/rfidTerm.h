@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QAction>
 #include <QtWidgets/QMainWindow>
 #include "ui_rfidTerm.h"
 
@@ -19,4 +20,7 @@ private:
 	Console *console;
 	IOThread* mThread;
 
+public slots:
+	void StartReading();
+	void StopReading();
 };

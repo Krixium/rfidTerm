@@ -1,5 +1,4 @@
-#ifndef CONSOLE_H
-#define CONSOLE_H
+#pragma once
 
 #include <QPlainTextEdit>
 
@@ -21,5 +20,3 @@ public slots:
 	void printMessage(const QString data);
 	void printError(const QString data);
 };
-
-#endif

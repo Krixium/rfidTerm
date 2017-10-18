@@ -36,8 +36,4 @@ signals:
 	void TagReadSignal(QString data);
 	void IOMessageSignal(QString message);
 	void IOErrorSignal(QString error);
-
-public slots:
-	void StartReadingSlot();
-	void StopReadingSlot();
 };
