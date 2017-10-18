@@ -123,14 +123,25 @@ void IOThread::run()
 	LPSKYETEK_TAG* lpTags;
 	unsigned short tagCount;
 
-	mbRunning = findReaders();
+	if (mNumOfReaders == 0)
+	{
+		mbRunning = findReaders();
+	}
 
 	while (mbRunning)
 	{
 		for (int i = 0; i < mNumOfReaders; i++)
 		{
 			st = SkyeTek_GetTags(mReaders[i], AUTO_DETECT, &lpTags, &tagCount);
-			if (st != SKYETEK_SUCCESS)
+			if (st == SKYETEK_TIMEOUT)
+			{
+				SkyeTek_FreeReaders(mReaders, mNumOfReaders);
+				SkyeTek_FreeDevices(mDevices, mNumOfDevices);
+				mNumOfReaders = 0;
+				mNumOfDevices = 0;
+				mbRunning = findReaders();
+			}
+			else if (st != SKYETEK_SUCCESS)
 			{
 				sendIOErrorSignal(st);
 			}
@@ -192,7 +203,11 @@ bool IOThread::findReaders()
 		return false;
 	}
 	
-	sendIOMessageSignal(QString("Devices found %1, Readers found %2").arg(mNumOfDevices).arg(mNumOfReaders));
+	sendIOMessageSignal(QString("Readers found: %1").arg(mNumOfReaders));
+	for (int i = 0; i < mNumOfReaders; i++)
+	{
+		sendIOMessageSignal(tcharToQString(mReaders[i]->friendly));
+	}
 	return true;
 }
 
@@ -218,7 +233,7 @@ bool IOThread::findReaders()
 ----------------------------------------------------------------------------------------------------------------------*/
 QString IOThread::tcharToQString(const TCHAR* str) const
 {
-	QString tmp = QString("Tag Found: ");
+	QString tmp = QString("");
 	for (int i = 0; str[i] != '\0'; i++)
 	{
 		tmp.append((LPSTR)(str + i));
@@ -248,7 +263,9 @@ QString IOThread::tcharToQString(const TCHAR* str) const
 ----------------------------------------------------------------------------------------------------------------------*/
 void IOThread::sendTagReadSignal(const LPSKYETEK_TAG lpTag)
 {
-	emit TagReadSignal(tcharToQString(lpTag->friendly));
+	QString tmp = QString("Tag Found: ");
+	tmp.append(tcharToQString(lpTag->friendly));
+	emit TagReadSignal(tmp);
 }
 
 /*--------------------------------------------------------------------------------------------------------------------
