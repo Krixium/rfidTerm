@@ -7,25 +7,12 @@ rfidTerm::rfidTerm(QWidget *parent)
 	, mThread(new IOThread(this))
 {
 	ui.setupUi(this);
+	console = new Console(this);
+	setCentralWidget(console);
 
-	connect(mThread, &IOThread::TagReadSignal, this, &rfidTerm::receiveData);
-	connect(mThread, &IOThread::IOMessageSignal, this, &rfidTerm::receiveMessage);
-	connect(mThread, &IOThread::IOErrorSignal, this, &rfidTerm::receiveError);
+	connect(mThread, &IOThread::TagReadSignal, console, &Console::printTag);
+	connect(mThread, &IOThread::IOMessageSignal, console, &Console::printMessage);
+	connect(mThread, &IOThread::IOErrorSignal, console, &Console::printError);
 
 	mThread->start();
-}
-
-void rfidTerm::receiveData(QString data)
-{
-	qDebug() << data;
-}
-
-void rfidTerm::receiveMessage(QString msg)
-{
-	qDebug() << msg;
-}
-
-void rfidTerm::receiveError(QString error)
-{
-	qDebug() << error;
 }

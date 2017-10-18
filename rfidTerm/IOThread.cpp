@@ -95,9 +95,6 @@ IOThread::~IOThread()
 
 	SkyeTek_FreeReaders(mReaders, mNumOfReaders);
 	SkyeTek_FreeDevices(mDevices, mNumOfDevices);
-
-	delete mDevices;
-	delete mReaders;
 }
 
 
@@ -182,7 +179,6 @@ bool IOThread::findReaders()
 	{
 		sendIOErrorSignal("No Devices Were Found");
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
-		delete mDevices;
 		return false;
 	}
 
@@ -192,8 +188,6 @@ bool IOThread::findReaders()
 		sendIOErrorSignal("No Readers Were Found");
 		SkyeTek_FreeDevices(mDevices, mNumOfDevices);
 		SkyeTek_FreeReaders(mReaders, mNumOfReaders);
-		delete mDevices;
-		delete mReaders;
 		return false;
 	}
 	

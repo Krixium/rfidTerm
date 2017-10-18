@@ -3,8 +3,10 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_rfidTerm.h"
 
+#include "console.h"
 #include "IOThread.h"
 
+class Console;
 class rfidTerm : public QMainWindow
 {
 	Q_OBJECT
@@ -14,11 +16,7 @@ public:
 
 private:
 	Ui::rfidTermClass ui;
-
+	Console *console;
 	IOThread* mThread;
 
-private slots:
-	void receiveData(QString data);
-	void receiveMessage(QString message);
-	void receiveError(QString error);
 };
