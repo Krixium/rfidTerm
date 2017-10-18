@@ -27,7 +27,7 @@
 --
 -- REVISIONS:		N/A 
 --
--- DESIGNER:		Benny Wang and Roger Zhang 
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang 
 --
@@ -46,7 +46,7 @@
 --
 -- REVISIONS:		N/A	
 --
--- DESIGNER:		Benny Wang and Roger Zhang	
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang	
 --
@@ -75,7 +75,7 @@ IOThread::IOThread(QObject* parent)
 --
 -- REVISIONS:		N/A	
 --
--- DESIGNER:		Benny Wang and Roger Zhang	
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang	
 --
@@ -102,7 +102,7 @@ IOThread::~IOThread()
 --
 -- REVISIONS:		N/A	
 --
--- DESIGNER:		Benny Wang and Roger Zhang	
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang	
 --
@@ -154,7 +154,7 @@ void IOThread::run()
 --
 -- REVISIONS:		N/A	
 --
--- DESIGNER:		Benny Wang and Roger Zhang	
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang	
 --
@@ -203,7 +203,7 @@ bool IOThread::findReaders()
 --
 -- REVISIONS:		N/A
 --
--- DESIGNER:		Benny Wang
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang
 --
@@ -233,7 +233,7 @@ QString IOThread::tcharToQString(const TCHAR* str) const
 --
 -- REVISIONS:		N/A
 --
--- DESIGNER:		Benny Wang
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang
 --
@@ -258,7 +258,7 @@ void IOThread::sendTagReadSignal(const LPSKYETEK_TAG lpTag)
 --
 -- REVISIONS:		N/A
 --
--- DESIGNER:		Benny Wang
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang
 --
@@ -282,7 +282,7 @@ void IOThread::sendIOMessageSignal(const QString message)
 --
 -- REVISIONS:		N/A
 --
--- DESIGNER:		Benny Wang
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang
 --
@@ -306,7 +306,7 @@ void IOThread::sendIOErrorSignal(const QString error)
 --
 -- REVISIONS:		N/A
 --
--- DESIGNER:		Benny Wang
+-- DESIGNER:		Benny Wang, Roger Zhang, Michaela Yoon
 --
 -- PROGRAMMER:		Benny Wang
 --
