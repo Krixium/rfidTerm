@@ -169,7 +169,7 @@ void IOThread::run()
 -- deallocate any memory it has used, emit an IOErrorSignal and return false. If a reader has been found function
 -- emits a IOmessageSignal with information about the discovered reader and saves it to the IOThread::mReaders.
 --
--- TODO: FIX MEMORY LEAK
+-- TODO: DOUBLE CHECK NOTES 
 ----------------------------------------------------------------------------------------------------------------------*/
 bool IOThread::findReaders()
 {
