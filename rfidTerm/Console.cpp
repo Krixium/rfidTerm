@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------------------
--- SOURCE FILE:		Console.cpp - A console that displays the appropriate slot for the signal recieves
+-- SOURCE FILE:		Console.cpp - A console that displays tag/message information in plain text.
 -- PROGRAM:			rfidTerm
 --
 -- FUNCTIONS:
