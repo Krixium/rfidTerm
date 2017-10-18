@@ -146,6 +146,7 @@ void IOThread::run()
 				}
 			}
 		}
+		sleep(1);
 	}
 }
 
